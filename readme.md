@@ -11,6 +11,7 @@ Movie Night is a  web application for people who want to have movie events with 
 
 ## Run locally
     cd movie_night
+    python manage.py migrate
     python manage.py runserver
 
 ## Screenshots

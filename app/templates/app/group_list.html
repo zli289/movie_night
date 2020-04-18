@@ -1,0 +1,267 @@
+{% extends "app/base_site.html" %}
+
+{% block title %} General Elements {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  <link href="/static/vendors/pnotify/dist/pnotify.css" rel="stylesheet">
+  <link href="/static/vendors/pnotify/dist/pnotify.buttons.css" rel="stylesheet">
+  <link href="/static/vendors/pnotify/dist/pnotify.nonblock.css" rel="stylesheet">
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="right_col" role="main">
+    <div class="">
+      <div class="page-title">
+        <div class="title_left">
+          <h3>Group List</h3>
+        </div>
+      </div>
+
+      <div class="clearfix"></div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="x_panel">
+            <div class="x_title">
+              <h2><i class="fa fa-bars"></i> Created Groups </h2>
+              <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Settings 1</a>
+                    </li>
+                    <li><a href="#">Settings 2</a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+              <div class="table-responsive">
+                <table class="table table-striped jambo_table bulk_action">
+                  <thead>
+                    <tr class="headings">
+                      <th class="column-title">ID</th>
+                      <th class="column-title">Name </th>
+                      <th class="column-title">Created Time</th>
+                      <th class="column-title">Title</th>
+                      <th class="column-title">Moivies</th>
+                      <th class="column-title">Events </th>
+                      <th class="column-title">Votings </th>
+                      <th class="column-title no-link last"><span class="nobr">Action</span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <form action="/quit_group/", method="get">
+                    {% csrf_token %}
+                  <tbody>
+                    {% for membership in created %}
+                    <tr class="">
+                      <td class="">{{membership.group.id}}</td>
+                      <td class=" ">{{membership.group.name}}</td>
+                      <td class=" ">{{membership.date_joined}}</td>
+                      <td class=" ">{{membership.title}}</td>
+                      <td class=" ">NULL</td>
+                      <td class=" ">NULL</td>
+                      <td class="a-right a-right ">NULL</td>
+                      <td class="">
+                        <button class="btn, btn-success", type="button", href="#">View</button>
+                      </td>  
+                      </td>
+                    </tr>             
+                    <input name="group_id", value="{{membership.group.id}}" hidden>   
+                    {% endfor %}
+                  </tbody>
+                  </form>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>   
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="x_panel">
+            <div class="x_title">
+              <h2><i class="fa fa-bars"></i> Joined Groups </h2>
+              <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Settings 1</a>
+                    </li>
+                    <li><a href="#">Settings 2</a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+              <div class="table-responsive">
+                <table class="table table-striped jambo_table bulk_action">
+                  <thead>
+                    <tr class="headings">
+                      <th class="column-title">ID</th>
+                      <th class="column-title">Name </th>
+                      <th class="column-title">Joined Time</th>
+                      <th class="column-title">Title</th>
+                      <th class="column-title">Moivies</th>
+                      <th class="column-title">Events </th>
+                      <th class="column-title">Votings </th>
+                      <th class="column-title no-link last"><span class="nobr">Action</span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <form action="/quit_group/", method="get">
+                    {% csrf_token %}
+                    <input name="group_id", id="group_id" hidden>   
+                  <tbody>
+                    {% for membership in joined %}
+                    <tr class="">
+                      <td class="">{{membership.group.id}}</td>
+                      <td class=" ">{{membership.group.name}}</td>
+                      <td class=" ">{{membership.date_joined}}</td>
+                      <td class=" ">{{membership.title}}</td>
+                      <td class=" ">NULL</td>
+                      <td class=" ">NULL</td>
+                      <td class="a-right a-right ">NULL</td>
+                      <td class="">
+                        <button class="btn, btn-success", type="submit", 
+                        onclick="document.getElementById('group_id').value = '{{membership.group.id}}';">Unsubscribe</button>
+                      </td>  
+                      </td>
+                    </tr>             
+                    {% endfor %}
+                  </tbody>
+                  </form>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>   
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="x_panel">
+            <div class="x_title">
+              <h2><i class="fa fa-bars"></i> Other Groups </h2>
+              <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Settings 1</a>
+                    </li>
+                    <li><a href="#">Settings 2</a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+              <div class="table-responsive">
+                <table class="table table-striped jambo_table bulk_action">
+                  <thead>
+                    <tr class="headings">
+                      <th class="column-title">ID</th>
+                      <th class="column-title">Name </th>
+                      <th class="column-title">Created Time</th>
+                      <th class="column-title">Title</th>
+                      <th class="column-title">Moivies</th>
+                      <th class="column-title">Events </th>
+                      <th class="column-title">Votings </th>
+                      <th class="column-title">Action </th>
+                    </tr>
+                  </thead>
+                  <form action="/join_group/", method="get">
+                    {% csrf_token %}
+                    <input name="group_id", id="group_id1" hidden>           
+                  <tbody>
+                    {% for group in other %}
+                    <tr class="">
+                      <td class="">{{group.id}}</td>
+                      <td class="">{{group.name}}</td>
+                      <td class="">{{group.c_time}}</td>
+                      <td class="">User</td>
+                      <td class="">NULL</td>
+                      <td class="">NULL</td>
+                      <td class="a-right a-right ">NULL</td>  
+                      <td class="">
+                        <button class="btn, btn-success", type="submit", 
+                        onclick="document.getElementById('group_id1').value = '{{group.id}}';">Join</button>
+                      </td>  
+                    </tr>
+                    {% endfor %}
+                  </tbody>          
+                  </form>      
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>   
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="x_panel">
+            <div class="x_title">
+              <h2><i class="fa fa-bars"></i> New Group </h2>
+              <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Settings 1</a>
+                    </li>
+                    <li><a href="#">Settings 2</a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+              <form id="demo-form2" action="/create_group/" method="get" data-parsley-validate class="form-horizontal form-label-left">
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="group_name">Group name</label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input type="text" name="group_name" required="required" class="form-control col-md-7 col-xs-12">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label col-md-3 col-sm-3 col-xs-12" for="group_title">Group title</label>
+                  <div class="col-md-6 col-sm-6 col-xs-12">
+                    <input type="text" name="group_title" disabled="disabled" value="Moderator" class="form-control col-md-7 col-xs-12">
+                  </div>
+                </div>
+
+                <div class="ln_solid"></div>
+                <div class="form-group">
+                  <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+  		              <button class="btn btn-primary" type="reset">Reset</button>
+                    <button type="submit" class="btn btn-success">Submit</button>
+                  </div>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>   
+      </div>
+
+    <div class="clearfix"></div>
+  </div>
+{% endblock content %}

@@ -1,0 +1,179 @@
+{% extends "app/base_site.html" %}
+
+{% block title %} General Elements {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  <link href="/static/vendors/pnotify/dist/pnotify.css" rel="stylesheet">
+  <link href="/static/vendors/pnotify/dist/pnotify.buttons.css" rel="stylesheet">
+  <link href="/static/vendors/pnotify/dist/pnotify.nonblock.css" rel="stylesheet">
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="right_col" role="main">
+    <div class="">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="x_panel">
+            <div class="x_title">
+              <h2><i class="fa fa-bars"></i> Event Information </h2>
+              <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Settings 1</a>
+                    </li>
+                    <li><a href="#">Settings 2</a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form id="add_event" action="/add_event/" method="get" data-parsley-validate class="form-horizontal form-label-left">
+                  {% csrf_token %}
+                  <input type="text" name="group_id" value="{{group.id}}" hidden>
+                  <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Event Name<span class="required">*</span>                     
+                    </label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                      <input type="text" name="event_name" required="required" value="{{event.name}}" class="form-control col-md-7 col-xs-12">
+                    </div>
+                  </div>
+  
+                  <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12">Group Name</label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text" name="group_name" disabled="disabled" value="{{group.name}}" class="form-control col-md-7 col-xs-12">
+                      </div>
+                    </div>
+    
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12">Start Time <span class="required">*</span> </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <fieldset>
+                            <div class="control-group">
+                              <div class="controls">
+                                <div class="input-prepend input-group">
+                                  <span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+                                  <input type="text" id="start" name="start" required="required"  class="form-control" value="2020-04-20 20:00:00" />
+                                </div>
+                              </div>
+                            </div>
+                          </fieldset>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">End Time <span class="required">*</span> </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <fieldset>
+                                <div class="control-group">
+                                  <div class="controls">
+                                    <div class="input-prepend input-group">
+                                      <span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+                                      <input type="text" id="end" name="end" required="required"  class="form-control" value="2020-04-20 22:00:00" />
+                                    </div>
+                                  </div>
+                                </div>
+                              </fieldset>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="group_title">Movie</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="movie_id" name="movie_id" hidden>
+                            <div class="selection">
+                                <select data-toggle="dropdown" class="btn btn-default dropdown-toggle" id="movie_list"> 
+                                  <option value="NULL">TBD</option>
+                                {% for movie in all_movie %}
+                                  <option value={{movie.m_id}}>{{movie.name}}</option>
+                                {% endfor %}
+                                </select>
+                              </div>
+                        </div>
+                    </div>
+    
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="group_title">Voting Event</label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <div class="checkbox">
+                            <input type="checkbox" class="flat" name="hasvoting" id="hasvoting" onclick="votingon();">
+                          </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="group_title">Selected Movies</label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        {% for movie in all_movie %}
+                        <label class="control-label">{{movie.name}}</label>
+                        <input class="voting_list; flat" type="checkbox" id="selected_movies" name="selected_movies" value="{{movie.m_id}}"/>
+                        {% endfor %}
+                      </div>
+                  </div>
+
+                    <div class="ln_solid"></div>
+                    <div class="form-group">
+                      <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                        <button class="btn btn-primary" type="button" onclick="javascript:history.back(-1);">Back</button>
+                        <button class="btn btn-primary" id="reset" type="reset">Reset</button>
+                        <button class="btn btn-success" id="submit" type="submit" onclick="getmovie();">Submit</button>
+                      </div>
+                    </div>
+    
+                  </form>
+            </div>
+          </div>
+        </div>   
+      </div>
+
+    <div class="clearfix"></div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+  <script>
+    function votingon()
+    {
+      if(document.getElementById("hasvoting").checked== true)
+      {
+        voting_list= document.getElementsByClassName("voting_list");
+        for(var i= 0; i< voting_list.length; i++)
+          voting_list[i].disabled=false;
+        document.getElementById('movie_list').selectedIndex= 0;
+      }
+      else
+      {
+        voting_list= document.getElementsByClassName("voting_list");
+        for(var i= 0; i< voting_list.length; i++)
+          voting_list[i].disabled=true;
+      }
+    }
+    function getmovie()
+    {
+      var choice=document.getElementById("movie_list");
+      var index=choice.selectedIndex ; 
+      document.getElementById("movie_id").value=choice.options[index].value;
+    }
+    function existedevent(title) {
+      if('{{event.id}}'!="")
+      {
+        document.getElementById("submit").disabled=true;
+        document.getElementById("reset").disabled=true;
+
+        document.getElementById("start").value= '{{event.start}}'; 
+        document.getElementById("end").value= '{{event.end}}';
+        document.getElementById("movie_list").value= '{{event.movie.m_id}}'; 
+        if('{{hasvoting}}'=="True")
+          document.getElementById("hasvoting").checked= true;
+      }     
+    }
+    window.onload= existedevent('{{hasvoting1}}')
+    </script>
+{% endblock javascripts %}

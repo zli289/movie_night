@@ -1,0 +1,188 @@
+{% extends "app/base_site.html" %}
+
+{% block title %} General Elements {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  <link href="/static/vendors/pnotify/dist/pnotify.css" rel="stylesheet">
+  <link href="/static/vendors/pnotify/dist/pnotify.buttons.css" rel="stylesheet">
+  <link href="/static/vendors/pnotify/dist/pnotify.nonblock.css" rel="stylesheet">
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="right_col" role="main">
+    <div class="">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="x_panel">
+            <div class="x_title">
+              <h2><i class="fa fa-bars"></i> Movie Information </h2>
+              <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Settings 1</a>
+                    </li>
+                    <li><a href="#">Settings 2</a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+              <div class="clearfix"></div>
+            </div>
+            <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-left top_search">
+                <form id="search_movie" action="/search_movie/" method="get" data-parsley-validate class="input-group">
+                  <input type="text" name="movie_name" class="form-control" placeholder="Search by movie name">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">Search</button>
+                    </span>
+                </form>
+              </div>
+            <div class="x_content">
+                <form id="add_movie" action="/add_movie/" method="get" data-parsley-validate class="form-horizontal form-label-left">
+                    {% csrf_token %}
+                  <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12">ID </label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text" name="m_id" readonly="readonly" value="{{movie.m_id}}" class="form-control col-md-7 col-xs-12">
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Name</label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text" name="title" readonly="readonly" value="{{movie.1}}" class="form-control col-md-7 col-xs-12">
+                      </div>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Director</label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text" name="director" readonly="readonly" value="{{movie.director}}" class="form-control col-md-7 col-xs-12">
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Year</label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text" name="year" readonly="readonly" value="{{movie.year}}" class="form-control col-md-7 col-xs-12">
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Duration</label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text" name="duration" readonly="readonly" value="{{movie.duration}}" class="form-control col-md-7 col-xs-12">
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Rating</label>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text" name="rating" readonly="readonly" value="{{movie.rating}}" class="form-control col-md-7 col-xs-12">
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                    <a href="{{movie.trailer}}"><label class="control-label col-md-3 col-sm-3 col-xs-12">Watch Trailers</label></a>
+                  </div>
+
+                  <div class="form-group">
+                    <a href="{{movie.review}}"><label class="control-label col-md-3 col-sm-3 col-xs-12">Watch Reviews</label></a>
+                  </div>
+
+                    <div class="ln_solid"></div>
+                    <div class="form-group">
+                      <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                        <button class="btn btn-primary" type="button" onclick="javascript:history.back(-1);">Back</button>
+                        <button class="btn btn-primary" id="reset" type="reset">Reset</button>
+                        <button class="btn btn-success" id="add" type="submit">Add</button>
+                      </div>
+                    </div>
+                </form>
+            </div>
+            </div>
+          </div>
+      </div>   
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="x_panel">
+            <div class="x_title">
+              <h2><i class="fa fa-bars"></i> Movies </h2>
+              <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Settings 1</a>
+                    </li>
+                    <li><a href="#">Settings 2</a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <div class="table-responsive">
+                  <table class="table table-striped jambo_table bulk_action">
+                    <thead>
+                      <tr class="headings">
+                        <th class="column-title">ID</th>
+                        <th class="column-title">Name</th>
+                        <th class="column-title">Director</th>
+                        <th class="column-title">Year</th>
+                        <th class="column-title">Duration</th>
+                        <th class="column-title">Ratingg</th>
+                        <th class="column-title">Action</th>
+                      </tr>
+                    </thead>
+                    <form action="/view_movie/", method="get">
+                      {% csrf_token %}
+                      <input name="m_id" id="m_id" hidden>   
+                    <tbody>
+                      {% for m1 in movie_list %}
+                      <tr class="">
+                        <td class="">{{m1.m_id}}</td>
+                        <td class="">{{m1.name}}</td>
+                        <td class="">{{m1.director}}</td>
+                        <td class="">{{m1.year}}</td>  
+                        <td class="">{{m1.duration}}</td>
+                        <td class="">{{m1.rating}}</td>                    
+                        <td class="">
+                          <button class="btn, btn-success", type="submit",
+                          onclick="document.getElementById('m_id').value = '{{m1.m_id}}';">View</button>
+                        </td>  
+                      </tr>       
+                      {% endfor %}
+                    </tbody> 
+                    </form>                             
+                  </table>
+                </div>
+            </div>
+          </div>
+        </div>   
+      </div>
+      </div>
+
+    <div class="clearfix"></div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+  <script>
+    function hasrecorded(record) {
+      if(record=="True")
+      {
+        document.getElementById("add").disabled=true;
+        document.getElementById("reset").disabled=true;
+      }     
+    }
+    window.onload= hasrecorded('{{record}}')
+    </script>
+{% endblock javascripts %}

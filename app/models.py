@@ -6,12 +6,13 @@ from django.db import models
 class Movie(models.Model):
     m_id= models.CharField(primary_key=True,max_length=32)
     name= models.CharField(max_length=64)
-    director= models.CharField(max_length=64,default="")
-    year= models.CharField(max_length=4,default="")
-    rating= models.CharField(max_length=4,default="")
-    duration= models.IntegerField(default=0)
-    trailer= models.CharField(max_length=128,default="")
-    review= models.CharField(max_length=128,default="")
+    director= models.CharField(max_length=64,null=True, blank=True)
+    year= models.CharField(max_length=4,null=True, blank=True)
+    rating= models.CharField(max_length=4,null=True, blank=True)
+    duration= models.CharField(max_length=4,null=True, blank=True)
+    trailer= models.CharField(max_length=128,null=True, blank=True)
+    review= models.CharField(max_length=128,null=True, blank=True)
+    cover= models.URLField(null=True, blank=True)
 
     def __str__(self):
         return self.name 

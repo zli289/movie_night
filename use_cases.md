@@ -47,17 +47,17 @@
 
 ##  Use Case Diagrams 
 +   User   
-![user](Diagrams/User.jpeg)
+![user](diagrams/User.jpeg)
 +   Group Member   
-![groupmember](Diagrams/Member.jpeg)
+![groupmember](diagrams/Member.jpeg)
 +   Moderator   
-![moderator](Diagrams/Moderator.jpeg)
+![moderator](diagrams/Moderator.jpeg)
 ##  Class Diagram
-![class](Diagrams/Class_Diagram.jpeg)
+![class](diagrams/Class_Diagram.jpeg)
 ##  Class Packages 
-![class](Diagrams/packages.jpeg)
+![class](diagrams/packages.jpeg)
 ##  Traceability Matrix 
-![matrix](Diagrams/Tmatrix.jpg)
+![matrix](diagrams/Tmatrix.jpg)
 
 |   Index   |       Features    |
 |-----------|-------------------|

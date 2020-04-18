@@ -12,10 +12,10 @@ def index(request):
 def search_movie(request):
     if request.method=="GET":
         title= request.GET.get('movie_name')
-        if models.Movie.objects.filter(name=title).exists():
-            m1= models.Movie.objects.get(name=title)
+        if models.Movie.objects.filter(name__icontains=title).exists():
+            m1= models.Movie.objects.filter(name__icontains =title)[0]
             return render(request, 'main/movie_info.html',
-            {'movie':m1, 'movie_list':models.Movie.objects.all(), 'record':True})
+            {'movie':m1, 'movie_list':models.Movie.objects.all()})
         else:
             moviesDB= imdb.IMDb()
             movies= moviesDB.search_movie(title)
@@ -27,39 +27,38 @@ def search_movie(request):
             m1.year=  movie.get('year',None)
             m1.rating= movie.get('rating',None)
             m1.duration= movie.get('runtimes',None)
-            if m1.duration:
+            m1.cover=movie.get('cover url',None)
+            if movie.get('runtimes',None):
                 m1.duration= m1.duration[0]
-            m1.director= ', '.join(map(str,movie['directors'])) 
+            if movie.get('directors',None):
+                m1.director= ', '.join(map(str,movie['directors'])) 
             m1.trailer= 'https://www.imdb.com/title/tt'+m_id+'/videogallery/content_type-trailer/'
             m1.review= 'https://www.imdb.com/title/tt'+m_id+'/reviews/'
-
             return render(request, 'main/movie_info.html',
-            {'movie':m1, 'movie_list':models.Movie.objects.all(),  
-            'record': models.Movie.objects.filter(name=m1.name).exists()})
+            {'movie':m1, 'movie_list':models.Movie.objects.all(), 'record': not models.Movie.objects.filter(name=m1.name).exists()})
 
 def view_movie(request):
     if request.method=="GET":
         m1= models.Movie.objects.get(m_id=request.GET.get('m_id'))
         return render(request, 'main/movie_info.html',
-        {'movie':m1, 'movie_list':models.Movie.objects.all(), 'record':True})
+        {'movie':m1, 'movie_list':models.Movie.objects.all()})
   
 def add_movie(request):
     if request.method=="GET":
         m_id=request.GET.get('m_id',None)
         name=request.GET.get('title',None)
-        director=request.GET.get('director',None)
-        year=request.GET.get('year',None)
-        duration=request.GET.get('duration',None)
-        rating=request.GET.get('rating',None)
-        trailer= 'https://www.imdb.com/title/tt'+m_id+'/videogallery/content_type-trailer/'
-        review= 'https://www.imdb.com/title/tt'+m_id+'/reviews/'
-
-        m1= models.Movie(m_id=m_id, name=name, director=director,
-        year=year, duration=duration, rating=rating, trailer=trailer, review=review)
+        m1= models.Movie(m_id=m_id, name=name)
+        m1.director=request.GET.get('director',None)
+        m1.year=request.GET.get('year',None)
+        m1.duration=request.GET.get('duration',None)
+        m1.rating=request.GET.get('rating',None)
+        m1.trailer= 'https://www.imdb.com/title/tt'+m_id+'/videogallery/content_type-trailer/'
+        m1.review= 'https://www.imdb.com/title/tt'+m_id+'/reviews/'
+        m1.cover= request.GET.get('cover',None)
         m1.save()
 
         return render(request, 'main/movie_info.html',
-        {'movie':m1, 'movie_list':models.Movie.objects.all(), 'record':True})
+        {'movie':m1, 'movie_list':models.Movie.objects.all()})
 
 def movie_info(request):
     if request.method=="GET":    

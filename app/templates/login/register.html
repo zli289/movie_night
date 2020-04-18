@@ -1,0 +1,59 @@
+{% extends "frame/base_site.html" %}
+
+{% block title %} Register {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  <!-- Animate.css -->
+  <link href="/static/vendors/animate.css/animate.min.css" rel="stylesheet">
+{% endblock stylesheets %}
+
+{% block body_class %}login{% endblock body_class %}
+
+{% block body %}
+  <div>
+    <div class="login_wrapper">
+      <div class="animate form login_form">
+        <section class="login_content">
+          <form lass="form-login" action="/register/" method="post">
+            {% csrf_token %}
+            <h1><i class="fa fa-play-circle"></i>  Movie Night</h1>
+            {% if message %}
+            <div class="alert alert-warning">{{ message }}</div>
+            {% endif %}
+            <div>
+              <input type="text" class="form-control" id="username" name='username' maxlength="64" placeholder="Username" required autocomplete="new-password"/>
+            </div>
+            <div>
+              <input type="password" class="form-control" id="password1" name='password1' maxlength="64" placeholder="Password" required autocomplete="new-password"/>
+            </div>
+            <div>
+              <input type="password" class="form-control" id="password2" name='password2'maxlength="64" placeholder="Repeat Password" required />
+            </div>
+            <div>
+              <input type="email" class="form-control" id="email" name='email' placeholder="Email Address" required />
+            </div>
+            <div>
+              <button class="btn btn-default" type="submit">Sign up</button>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <div class="separator">
+              <p class="change_link">Aleady a member?
+                <a href="/login/" class="to_register"> Sign in </a>
+              </p>
+              <div class="clearfix"></div>
+              <br />
+
+              <div>
+                <p>Have fun and movie together!</p>
+              </div>
+            </div>
+          </form>
+        </section>
+      </div>
+    </div>
+  </div>
+{% endblock body %}
+

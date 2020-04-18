@@ -1,6 +1,6 @@
-{% extends "app/base_site.html" %}
+{% extends "frame/base_site.html" %}
 
-{% block title %} General Elements {% endblock title %}
+{% block title %} Movie {% endblock title %}
 
 {% block stylesheets %}
   {{ block.super }}
@@ -43,55 +43,50 @@
             <div class="x_content">
                 <form id="add_movie" action="/add_movie/" method="get" data-parsley-validate class="form-horizontal form-label-left">
                     {% csrf_token %}
+                    
                   <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">ID </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <input type="text" name="m_id" readonly="readonly" value="{{movie.m_id}}" class="form-control col-md-7 col-xs-12">
                       </div>
                   </div>
-
                   <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">Name</label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <input type="text" name="title" readonly="readonly" value="{{movie.name}}" class="form-control col-md-7 col-xs-12">
                       </div>
-                  </div>
-                  
+                  </div>                 
                   <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">Director</label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <input type="text" name="director" readonly="readonly" value="{{movie.director}}" class="form-control col-md-7 col-xs-12">
                       </div>
                   </div>
-
                   <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">Year</label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <input type="text" name="year" readonly="readonly" value="{{movie.year}}" class="form-control col-md-7 col-xs-12">
                       </div>
                   </div>
-
                   <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">Duration</label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <input type="text" name="duration" readonly="readonly" value="{{movie.duration}}" class="form-control col-md-7 col-xs-12">
                       </div>
                   </div>
-
                   <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">Rating</label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <input type="text" name="rating" readonly="readonly" value="{{movie.rating}}" class="form-control col-md-7 col-xs-12">
                       </div>
                   </div>
-
                   <div class="form-group">
                     <a href="{{movie.trailer}}"><label class="control-label col-md-3 col-sm-3 col-xs-12">Watch Trailers</label></a>
                   </div>
-
                   <div class="form-group">
                     <a href="{{movie.review}}"><label class="control-label col-md-3 col-sm-3 col-xs-12">Watch Reviews</label></a>
                   </div>
+                  
 
                     <div class="ln_solid"></div>
                     <div class="form-group">

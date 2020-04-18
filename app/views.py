@@ -1,20 +1,20 @@
 from django.shortcuts import render, redirect
 from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
-from . import models, forms
+from . import models
 import imdb
 
 def index(request):
     if not request.session.get('is_login', None):
         return redirect('/login/')
-    return render(request, 'app/movie_info.html')
+    return redirect('/movie_info/')
 
 def search_movie(request):
     if request.method=="GET":
         title= request.GET.get('movie_name')
         if models.Movie.objects.filter(name=title).exists():
             m1= models.Movie.objects.get(name=title)
-            return render(request, 'app/movie_info.html',
+            return render(request, 'main/movie_info.html',
             {'movie':m1, 'movie_list':models.Movie.objects.all(), 'record':True})
         else:
             moviesDB= imdb.IMDb()
@@ -33,14 +33,14 @@ def search_movie(request):
             m1.trailer= 'https://www.imdb.com/title/tt'+m_id+'/videogallery/content_type-trailer/'
             m1.review= 'https://www.imdb.com/title/tt'+m_id+'/reviews/'
 
-            return render(request, 'app/movie_info.html',
+            return render(request, 'main/movie_info.html',
             {'movie':m1, 'movie_list':models.Movie.objects.all(),  
             'record': models.Movie.objects.filter(name=m1.name).exists()})
 
 def view_movie(request):
     if request.method=="GET":
         m1= models.Movie.objects.get(m_id=request.GET.get('m_id'))
-        return render(request, 'app/movie_info.html',
+        return render(request, 'main/movie_info.html',
         {'movie':m1, 'movie_list':models.Movie.objects.all(), 'record':True})
   
 def add_movie(request):
@@ -58,21 +58,21 @@ def add_movie(request):
         year=year, duration=duration, rating=rating, trailer=trailer, review=review)
         m1.save()
 
-        return render(request, 'app/movie_info.html',
+        return render(request, 'main/movie_info.html',
         {'movie':m1, 'movie_list':models.Movie.objects.all(), 'record':True})
 
 def movie_info(request):
     if request.method=="GET":    
-        return render(request, 'app/movie_info.html', {'movie_list':models.Movie.objects.all()})
+        return render(request, 'main/movie_info.html', {'movie_list':models.Movie.objects.all()})
 
 def voting(request):
     u1= models.User.objects.get(id=request.session.get('user_id',None))
     if request.method=="GET":
-        v1= models.Voting.objects.get(id=request.GET.get('voting_id',None))
-        votes= models.Votes.objects.filter(voting=v1)
-        status= models.HasVoted.objects.filter(user=u1,voting=v1).exists()
-        return render(request, 'app/voting.html', {'voting':v1, 'votes':votes, 'status':status})
-    return render(request, 'app/voting.html')
+        voting= models.Voting.objects.get(id=request.GET.get('voting_id',None))
+        votes= models.Votes.objects.filter(voting=voting)
+        status= models.HasVoted.objects.filter(user=u1,voting=voting).exists()
+        return render(request, 'main/voting.html', locals())
+    return render(request, 'main/voting.html')
 
 def vote(request):
     u1= models.User.objects.get(id=request.session.get('user_id',None))
@@ -85,18 +85,18 @@ def vote(request):
         hasvoted= models.HasVoted(user=u1, voting=v1)
         hasvoted.save()
         votes= models.Votes.objects.filter(voting=v1)
-        return render(request, 'app/voting.html', {'voting':v1, 'votes':votes, 'status':True})
+        return render(request, 'main/voting.html', {'voting':v1, 'votes':votes, 'status':True})
 
 def event_info(request):
     u1= models.User.objects.get(id=request.session.get('user_id',None))
     if request.method=="GET":
-        g1= models.Group.objects.get(id=request.GET.get('group_id1',None)) 
+        group= models.Group.objects.get(id=request.GET.get('group_id1',None)) 
         all_movie= models.Movie.objects.all()
         if request.GET.get('event_id'):
-            e1= models.Event.objects.get(id=request.GET.get('event_id'))
-            hasvoting= models.Voting.objects.filter(event=e1).exists()
-            return render(request, 'app/event_info.html',{'group':g1, 'event':e1, 'hasvoting':hasvoting, 'all_movie':all_movie} )
-        return render(request, 'app/event_info.html',{'group':g1, 'event':None, 'all_movie':all_movie} )
+            event= models.Event.objects.get(id=request.GET.get('event_id'))
+            hasvoting= models.Voting.objects.filter(event=event).exists()
+            return render(request, 'main/event_info.html', locals())
+        return render(request, 'main/event_info.html', locals())
 
 def add_event(request):
     if request.method=="GET":
@@ -135,17 +135,15 @@ def group_info(request):
             u2.members.remove(g1)
             u2.save()
 
-        return render(request, 'app/group_info.html',
-        {'group_list': group_list, 'membership': membership, 'user_list': user_list, 'movie_list': movie_list})
-    return render(request, 'app/group_info.html',{'group_list': group_list})
+        return render(request, 'main/group_info.html',locals())
+    return render(request, 'main/group_info.html',{'group_list': group_list})
     
 def group_list(request):
     u1= models.User.objects.get(id=request.session.get('user_id',None))
     created= models.Membership.objects.filter(member=u1,title='Moderator')
     joined= models.Membership.objects.filter(member=u1,title='Member')
     other=  models.Group.objects.exclude(user=u1) 
-    group_list={'created': created, 'joined':joined, 'other':other}
-    return render(request, 'app/group_list.html', group_list)
+    return render(request, 'main/group_list.html', locals())
 
 def create_group(request):
     u1= models.User.objects.get(id=request.session.get('user_id',None))
@@ -157,7 +155,6 @@ def create_group(request):
         m1= models.Membership(member=u1,group=new_group)
         m1.title= "Moderator"
         m1.save()
-
     return HttpResponseRedirect('/group_list/')
 
 def join_group(request):
@@ -189,66 +186,60 @@ def gentella_html(request):
 def login(request):
     if request.session.get('is_login',None):
         return redirect('/index/')
-
-    if request.method == "POST":
-        login_form= forms.UserForm(request.POST)
-        message= 'Please try again.'
-        if login_form.is_valid():
-            username= login_form.cleaned_data.get('username')
-            password= login_form.cleaned_data.get('password')
-            try:
-                user= models.User.objects.get(name=username)
-            except:
-                message= 'User does not exist.'
-                return render(request, 'back/login.html')
-            
-            if user.password== password:
-                request.session['is_login']= True
-                request.session['user_id']= user.id
-                request.session['user_name']= user.name
-                return redirect('/index/')
-            else:
-                message= 'Incorrect password.'
-                return render(request, 'back/login.html',locals())
-        else:
-            return render(request, 'back/login.html',locals())
     
-    login_form= forms.UserForm()
-    return render(request, 'back/login.html',locals())
+    if request.method == "POST":
+        message= 'Please try again.'
+        username= request.POST.get('username')
+        password= request.POST.get('password')
+        try:
+            user= models.User.objects.get(name=username)
+        except:
+            message= 'User does not exist.'
+            return render(request, 'login/login.html',locals())
+            
+        if user.password== password:
+            request.session['is_login']= True
+            request.session['user_id']= user.id
+            request.session['user_name']= user.name
+            return redirect('/index/')
+        else:
+            message= 'Incorrect password.'
+            return render(request, 'login/login.html',locals())
+    else:
+        return render(request, 'login/login.html',locals())   
+    return render(request, 'login/login.html',locals())
 
 def register(request):
     if request.session.get('is_login',None):
-        return redirect('/index/')
+        return redirect('/index/')  
     
     if request.method== "POST":
-        register_form= forms.RegisterForm(request.POST)
         message= 'Plase try again'
-        if register_form.is_valid():
-            username= register_form.cleaned_data.get('username')
-            password1 = register_form.cleaned_data.get('password1')
-            password2 = register_form.cleaned_data.get('password2')
-            email = register_form.cleaned_data.get('email')
+        username= request.POST.get('username')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        email = request.POST.get('email')
 
-            if password1!= password2:
-                message= 'Passwords do not match'
-                return render(request, 'back/register.html', locals())
-            else:
-                same_name_user= models.User.objects.filter(name=username)
-                if same_name_user:
-                    message= 'Username already exists'
-                    return render(request, 'back/register.html', locals())
-                same_email_user= models.User.objects.filter(name=email)
-                if same_email_user:
-                    message= 'Email has been registered'
-                    return render(request, 'back/register.html', locals())
-                
-                new_user= models.User(name= username, password= password1, email= email)
-                new_user.save()
-                return redirect('/login/')
+        if password1!= password2:
+            message= 'Passwords do not match'
+            return render(request, 'login/register.html', locals())
         else:
-            return render(request, 'back/register.html',locals())
-    register_form= forms.RegisterForm()
-    return render(request, 'back/register.html',locals())
+            same_name_user= models.User.objects.filter(name=username)
+            if same_name_user:
+                message= 'Username already exists'
+                return render(request, 'login/register.html', locals())
+            same_email_user= models.User.objects.filter(name=email)
+            if same_email_user:
+                message= 'Email has been registered'
+                return render(request, 'login/register.html', locals())
+                
+            new_user= models.User(name= username, password= password1, email= email)
+            new_user.save()
+            message= 'registration success'
+            return redirect('/login/')
+    else:
+        return render(request, 'login/register.html',locals())
+    return render(request, 'login/register.html',locals())
 
 def logout(request):
     if not request.session.get('is_login',None):

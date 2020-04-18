@@ -1,6 +1,6 @@
-{% extends "app/base_site.html" %}
+{% extends "frame/base_site.html" %}
 
-{% block title %} General Elements {% endblock title %}
+{% block title %} Voting {% endblock title %}
 
 {% block stylesheets %}
   {{ block.super }}
@@ -38,7 +38,7 @@
                 <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">Event Name</label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input type="text" name="event_name"value="{{voting.event.name}}" disabled="disabled" class="form-control col-md-7 col-xs-12">
+                      <input type="text" name="event_name" value="{{voting.event.name}}" disabled="disabled" class="form-control col-md-7 col-xs-12">
                     </div>
                   </div>
   

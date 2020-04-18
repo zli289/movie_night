@@ -7,12 +7,16 @@ Movie Night is a  web application for people who want to have movie events with 
 +   [Use Cases Design](use_cases.md)
 
 ## Install requirements 
-    pip install -r requirements.txt
+```python
+pip install -r requirements.txt
+```
 
 ## Run locally
-    cd movie_night
-    python manage.py migrate
-    python manage.py runserver
+```python
+cd movie_night
+python manage.py migrate
+python manage.py runserver
+```
 
 ## Screenshots
 ![group_list](diagrams/group_list.jpg)

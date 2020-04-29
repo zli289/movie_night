@@ -35,12 +35,15 @@
             <div class="x_content">
                 <form id="add_event" action="/add_event/" method="get" data-parsley-validate class="form-horizontal form-label-left">
                   {% csrf_token %}
+                  {% if message %}
+                    <div class="alert alert-warning">{{ message }}</div>
+                {% endif %}
                   <input type="text" name="group_id" value="{{group.id}}" hidden>
                   <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">Event Name<span class="required">*</span>                     
                     </label>
                     <div class="col-md-6 col-sm-6 col-xs-12">
-                      <input type="text" name="event_name" required="required" value="{{event.name}}" class="form-control col-md-7 col-xs-12">
+                      <input type="text" id="event_name" name="event_name" required="required" value="{{event.name}}" class="form-control col-md-7 col-xs-12">
                     </div>
                   </div>
   
@@ -86,10 +89,10 @@
                     <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="group_title">Movie</label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" id="movie_id" name="movie_id" hidden>
+                          <input type="text" id="event_movie" name="event_movie" hidden>
                             <div class="selection">
                                 <select data-toggle="dropdown" class="btn btn-default dropdown-toggle" id="movie_list"> 
-                                  <option value="NULL">TBD</option>
+                                  <option>TBD</option>
                                 {% for movie in all_movie %}
                                   <option value={{movie.m_id}}>{{movie.name}}</option>
                                 {% endfor %}
@@ -120,13 +123,65 @@
                     <div class="ln_solid"></div>
                     <div class="form-group">
                       <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                        <button class="btn btn-primary" type="button" onclick="javascript:history.back(-1);">Back</button>
+                        <button class="btn btn-primary" type="button" onclick="window.location='/group_info/'">Back</button>
                         <button class="btn btn-primary" id="reset" type="reset">Reset</button>
                         <button class="btn btn-success" id="submit" type="submit" onclick="getmovie();">Submit</button>
                       </div>
                     </div>
     
                   </form>
+            </div>
+          </div>
+
+          <div class="x_panel">
+            <div class="x_title">
+              <h2><i class="fa fa-bars"></i> Voting Information </h2>
+              <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Settings 1</a>
+                    </li>
+                    <li><a href="#">Settings 2</a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+            <form action="/vote/", method="get"  data-parsley-validate class="form-horizontal form-label-left">
+                {% csrf_token %}               
+              <div class="table-responsive">
+                        <table class="table table-striped jambo_table bulk_action" id="voting_table" hidden>
+                          <thead>
+                            <tr class="headings">
+                              <th class="column-title">Movie ID</th>
+                              <th class="column-title">Moive Name</th>
+                              <th class="column-title">Votes</th>
+                              <th class="column-title">Action </th>
+                            </tr>
+                          </thead>
+                          <input name="voting_id" id="voting_id" value="{{voting.id}}" hidden>   
+                          <input name="voting_movie" id="voting_movie" hidden>          
+                          <tbody> 
+                            {% for vote in votes.all %}
+                            <tr class="">
+                              <td class="">{{vote.movie.m_id}}</td>
+                              <td class="">{{vote.movie.name}}</td>
+                              <td class="">{{vote.count}}</td>                  
+                              <td class="">
+                                <button class="btn, btn-success", type="submit"
+                                onclick="document.getElementById('voting_movie').value='{{vote.movie.m_id}}';">Vote</button>
+                              </td>  
+                            </tr>
+                            {% endfor %}
+                          </tbody>              
+                        </table>
+              </div>
+            </form> 
             </div>
           </div>
         </div>   
@@ -141,16 +196,15 @@
   <script>
     function votingon()
     {
+      voting_list= document.getElementsByClassName("voting_list");
       if(document.getElementById("hasvoting").checked== true)
-      {
-        voting_list= document.getElementsByClassName("voting_list");
+      {        
         for(var i= 0; i< voting_list.length; i++)
           voting_list[i].disabled=false;
         document.getElementById('movie_list').selectedIndex= 0;
       }
       else
       {
-        voting_list= document.getElementsByClassName("voting_list");
         for(var i= 0; i< voting_list.length; i++)
           voting_list[i].disabled=true;
       }
@@ -159,21 +213,41 @@
     {
       var choice=document.getElementById("movie_list");
       var index=choice.selectedIndex ; 
-      document.getElementById("movie_id").value=choice.options[index].value;
+      document.getElementById("event_movie").value=choice.options[index].value;
     }
-    function existedevent(title) {
+    function existedevent() 
+    {
       if('{{event.id}}'!="")
       {
-        document.getElementById("submit").disabled=true;
-        document.getElementById("reset").disabled=true;
-
         document.getElementById("start").value= '{{event.start}}'; 
         document.getElementById("end").value= '{{event.end}}';
         document.getElementById("movie_list").value= '{{event.movie.m_id}}'; 
-        if('{{hasvoting}}'=="True")
-          document.getElementById("hasvoting").checked= true;
-      }     
+    
+        document.getElementById("event_name").disabled=true; 
+        document.getElementById("start").disabled=true; 
+        document.getElementById("end").disabled=true; 
+        document.getElementById("movie_list").disabled=true;
+        document.getElementById("hasvoting").disabled=true;
+        document.getElementById("submit").disabled=true;
+        document.getElementById("reset").disabled=true;
+
+        if('{{voting.id}}'!="")
+          document.getElementById("voting_table").hidden=false;
+      }   
     }
-    window.onload= existedevent('{{hasvoting1}}')
+    function hasvoted(status) 
+    {
+      if(status=='True')
+      {
+        var buttons= document.getElementsByClassName("btn, btn-success");
+        for(i=0;i< buttons.length; i++)
+        {
+          buttons[i].disabled= "disabled";
+          buttons[i].style= "background-color:gray;"; 
+        }  
+      }      
+    }
+
+    window.onload= existedevent();hasvoted('{{status}}')
     </script>
 {% endblock javascripts %}

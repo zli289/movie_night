@@ -48,8 +48,8 @@
                       <th class="column-title">ID</th>
                       <th class="column-title">Name </th>
                       <th class="column-title">Created Time</th>
-                      <th class="column-title">Title</th>
-                      <th class="column-title">Moivies</th>
+                      <th class="column-title">Moderator</th>
+                      <th class="column-title">Users</th>
                       <th class="column-title">Events </th>
                       <th class="column-title">Votings </th>
                       <th class="column-title no-link last"><span class="nobr">Action</span>
@@ -59,21 +59,21 @@
                   <form action="/quit_group/", method="get">
                     {% csrf_token %}
                   <tbody>
-                    {% for membership in created %}
+                    {% for group in created %}
                     <tr class="">
-                      <td class="">{{membership.group.id}}</td>
-                      <td class=" ">{{membership.group.name}}</td>
-                      <td class=" ">{{membership.date_joined}}</td>
-                      <td class=" ">{{membership.title}}</td>
-                      <td class=" ">NULL</td>
-                      <td class=" ">NULL</td>
-                      <td class="a-right a-right ">NULL</td>
+                      <td class="">{{group.id}}</td>
+                      <td class="">{{group.name}}</td>
+                      <td class="">{{group.c_time}}</td>
+                      <td class="">{{group.moderator}}</td>
+                      <td class="">{{group.user_set.count}}</td>
+                      <td class="">{{group.event_set.count}}</td>
+                      <td class="">{{group.voting_set.count}}</td>
                       <td class="">
                         <button class="btn, btn-success", type="button", href="#">View</button>
                       </td>  
                       </td>
                     </tr>             
-                    <input name="group_id", value="{{membership.group.id}}" hidden>   
+                    <input name="group_id", value="{{group.id}}" hidden>   
                     {% endfor %}
                   </tbody>
                   </form>
@@ -111,9 +111,9 @@
                     <tr class="headings">
                       <th class="column-title">ID</th>
                       <th class="column-title">Name </th>
-                      <th class="column-title">Joined Time</th>
-                      <th class="column-title">Title</th>
-                      <th class="column-title">Moivies</th>
+                      <th class="column-title">Created Time</th>
+                      <th class="column-title">Moderator</th>
+                      <th class="column-title">Users</th>
                       <th class="column-title">Events </th>
                       <th class="column-title">Votings </th>
                       <th class="column-title no-link last"><span class="nobr">Action</span>
@@ -124,18 +124,18 @@
                     {% csrf_token %}
                     <input name="group_id", id="group_id" hidden>   
                   <tbody>
-                    {% for membership in joined %}
+                    {% for group in joined %}
                     <tr class="">
-                      <td class="">{{membership.group.id}}</td>
-                      <td class=" ">{{membership.group.name}}</td>
-                      <td class=" ">{{membership.date_joined}}</td>
-                      <td class=" ">{{membership.title}}</td>
-                      <td class=" ">NULL</td>
-                      <td class=" ">NULL</td>
-                      <td class="a-right a-right ">NULL</td>
+                      <td class="">{{group.id}}</td>
+                      <td class="">{{group.name}}</td>
+                      <td class="">{{group.c_time}}</td>
+                      <td class="">{{group.moderator}}</td>
+                      <td class="">{{group.user_set.count}}</td>
+                      <td class="">{{group.event_set.count}}</td>
+                      <td class="">{{group.voting_set.count}}</td>
                       <td class="">
                         <button class="btn, btn-success", type="submit", 
-                        onclick="document.getElementById('group_id').value = '{{membership.group.id}}';">Unsubscribe</button>
+                        onclick="document.getElementById('group_id').value = '{{group.id}}';">Unsubscribe</button>
                       </td>  
                       </td>
                     </tr>             
@@ -177,8 +177,8 @@
                       <th class="column-title">ID</th>
                       <th class="column-title">Name </th>
                       <th class="column-title">Created Time</th>
-                      <th class="column-title">Title</th>
-                      <th class="column-title">Moivies</th>
+                      <th class="column-title">Moderator</th>
+                      <th class="column-title">Users</th>
                       <th class="column-title">Events </th>
                       <th class="column-title">Votings </th>
                       <th class="column-title">Action </th>
@@ -193,10 +193,10 @@
                       <td class="">{{group.id}}</td>
                       <td class="">{{group.name}}</td>
                       <td class="">{{group.c_time}}</td>
-                      <td class="">User</td>
-                      <td class="">NULL</td>
-                      <td class="">NULL</td>
-                      <td class="a-right a-right ">NULL</td>  
+                      <td class="">{{group.moderator}}</td>
+                      <td class="">{{group.user_set.count}}</td>
+                      <td class="">{{group.event_set.count}}</td>
+                      <td class="">{{group.voting_set.count}}</td>  
                       <td class="">
                         <button class="btn, btn-success", type="submit", 
                         onclick="document.getElementById('group_id1').value = '{{group.id}}';">Join</button>

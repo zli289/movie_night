@@ -14,7 +14,7 @@
     <div class="">
       <div class="page-title">
         <div class="title_left">
-          <h3>Group {{membership.group.name}}</h3>
+          <h3>Group {{membership.group.name}} - {{membership.title}}</h3>
         </div>
         <div class="btn-group">
             <form action="/group_info/", method="get">
@@ -24,7 +24,7 @@
             <ul class="dropdown-menu">
             {% for member in group_list %}
               <li><button class="btn btn-default dropdown-toggle" type="submit",
-                onclick="document.getElementById('group_id').value = '{{member.group.id}}';">{{member.group.name}}</button></li>
+                onclick="document.getElementById('group_id').value = '{{member.group.id}}';">{{member.group.name}} - {{member.title}}</button></li>
               {% endfor %}
             </ul>
             </form>
@@ -120,8 +120,8 @@
                     <table class="table table-striped jambo_table bulk_action">
                       <thead>
                         <tr class="headings">
+                          <th class="column-title">Event ID</th>
                           <th class="column-title">Event Name</th>
-                          <th class="column-title">Group</th>
                           <th class="column-title">Start Time</th>
                           <th class="column-title">End Time</th>
                           <th class="column-title">Movie</th>
@@ -132,12 +132,12 @@
                       <tbody>
                         {% for event in membership.group.event_set.all %}
                         <tr class="">
+                          <td class="">{{event.id}}</td>
                           <td class="">{{event.name}}</td>
-                          <td class="">{{event.group.name}}</td>
                           <td class="">{{event.start}}</td>  
                           <td class="">{{event.end}}</td>
                           <td class="">{{event.movie.name}}</td>
-                          <td class=""></td>                           
+                          <td class="">{{event.voting_set.exists}}</td>                           
                           <td class="">
                             <button class="btn, btn-success", type="submit",
                             onclick="document.getElementById('event_id').value = '{{event.id}}';">View</button>
@@ -152,64 +152,6 @@
                     
               </form>          
               </div>
-          </div>
-        </div>   
-      </div>
-
-      <div class="row">
-        <div class="col-md-12">
-          <div class="x_panel">
-            <div class="x_title">
-              <h2><i class="fa fa-bars"></i> Voting Events </h2>
-              <ul class="nav navbar-right panel_toolbox">
-                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                </li>
-                <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                  <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">Settings 1</a>
-                    </li>
-                    <li><a href="#">Settings 2</a>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-              <div class="clearfix"></div>
-            </div>
-            <div class="x_content">
-                <div class="table-responsive">
-                    <table class="table table-striped jambo_table bulk_action">
-                      <thead>
-                        <tr class="headings">
-                          <th class="column-title">Event ID</th>
-                          <th class="column-title">Event Name</th>
-                          <th class="column-title">Start Time</th>
-                          <th class="column-title">End Time</th>
-                          <th class="column-title">Action </th>
-                        </tr>
-                      </thead>
-                      <form action="/voting/", method="get">
-                        {% csrf_token %}
-                        <input name="voting_id" id="voting_id" hidden>   
-                        <input name="group_id", value="{{group.id}}" hidden>           
-                      <tbody>
-                        {% for voting in membership.group.voting_set.all %}
-                        <tr class="">
-                          <td class="">{{voting.event.id}}</td>
-                          <td class="">{{voting.event.name}}</td>
-                          <td class="">{{voting.event.start}}</td>
-                          <td class="">{{voting.event.end}}</td>                     
-                          <td class="">
-                            <button class="btn, btn-success", type="submit",
-                            onclick="document.getElementById('voting_id').value = '{{voting.id}}';">View</button>
-                          </td>  
-                        </tr>
-                        {% endfor %}
-                      </tbody>          
-                      </form>      
-                    </table>
-                </div>
-            </div>
           </div>
         </div>   
       </div>

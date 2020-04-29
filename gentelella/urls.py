@@ -39,7 +39,6 @@ urlpatterns = [
     url(r'event_info/$', views.event_info, name='event_info'),
     url(r'add_event/$', views.add_event, name='add_event'),   
     #voting
-    url(r'voting/$', views.voting, name='voting'),
     url(r'vote/$', views.vote, name='vote'),
     #movie
     url(r'movie_info/$', views.movie_info, name='movie_info'),

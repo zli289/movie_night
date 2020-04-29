@@ -39,9 +39,9 @@ def search_movie(request):
 
 def view_movie(request):
     if request.method=="GET":
-        m1= models.Movie.objects.get(m_id=request.GET.get('m_id'))
-        return render(request, 'main/movie_info.html',
-        {'movie':m1, 'movie_list':models.Movie.objects.all()})
+        movie= models.Movie.objects.get(m_id=request.GET.get('m_id'))
+        movie_list= models.Movie.objects.all()
+        return render(request, 'main/movie_info.html', locals())
   
 def add_movie(request):
     if request.method=="GET":
@@ -64,27 +64,24 @@ def movie_info(request):
     if request.method=="GET":    
         return render(request, 'main/movie_info.html', {'movie_list':models.Movie.objects.all()})
 
-def voting(request):
-    u1= models.User.objects.get(id=request.session.get('user_id',None))
-    if request.method=="GET":
-        voting= models.Voting.objects.get(id=request.GET.get('voting_id',None))
-        votes= models.Votes.objects.filter(voting=voting)
-        status= models.HasVoted.objects.filter(user=u1,voting=voting).exists()
-        return render(request, 'main/voting.html', locals())
-    return render(request, 'main/voting.html')
-
 def vote(request):
     u1= models.User.objects.get(id=request.session.get('user_id',None))
     if request.method=="GET":
         v1= models.Voting.objects.get(id=request.GET.get('voting_id',None))
-        m1= models.Movie.objects.get(m_id=request.GET.get('movie_id',None))
+        m1= models.Movie.objects.get(m_id=request.GET.get('voting_movie',None))
         vote= models.Votes.objects.get(movie=m1, voting=v1)
         vote.count+=1
         vote.save()
+
         hasvoted= models.HasVoted(user=u1, voting=v1)
         hasvoted.save()
+
         votes= models.Votes.objects.filter(voting=v1)
-        return render(request, 'main/voting.html', {'voting':v1, 'votes':votes, 'status':True})
+        event= models.Event.objects.get(voting=v1)
+        all_movie= models.Movie.objects.all()
+        return render(request, 'main/event_info.html', 
+        {'voting':v1, 'votes':votes, 'status':True, 'hasvoting':True,
+        'event':event, 'group':event.group, 'all_movie':all_movie})
 
 def event_info(request):
     u1= models.User.objects.get(id=request.session.get('user_id',None))
@@ -93,8 +90,10 @@ def event_info(request):
         all_movie= models.Movie.objects.all()
         if request.GET.get('event_id'):
             event= models.Event.objects.get(id=request.GET.get('event_id'))
-            hasvoting= models.Voting.objects.filter(event=event).exists()
-            return render(request, 'main/event_info.html', locals())
+            if event.voting_set.exists():
+                voting= models.Voting.objects.get(event=event)
+                votes= models.Votes.objects.filter(voting=voting)
+                status= models.HasVoted.objects.filter(user=u1,voting=voting).exists()
         return render(request, 'main/event_info.html', locals())
 
 def add_event(request):
@@ -113,7 +112,11 @@ def add_event(request):
                 v1.movies.add(m1)
             v1.save()
         else:
-            m1= models.Movie.objects.get(m_id=request.GET.get('movie_id',None))
+            if 'TBD'==request.GET.get('event_movie',None):
+                e1.delete()
+                message="Please choose a movie or a voting event"
+                return render(request, 'main/event_info.html', locals())
+            m1= models.Movie.objects.get(m_id=request.GET.get('event_movie',None))
             e1.movie=m1
             e1.save()
         return HttpResponseRedirect('/group_info/')
@@ -134,13 +137,12 @@ def group_info(request):
             u2.members.remove(g1)
             u2.save()
 
-        return render(request, 'main/group_info.html',locals())
-    return render(request, 'main/group_info.html',{'group_list': group_list})
+    return render(request, 'main/group_info.html', locals())
     
 def group_list(request):
     u1= models.User.objects.get(id=request.session.get('user_id',None))
-    created= models.Membership.objects.filter(member=u1,title='Moderator')
-    joined= models.Membership.objects.filter(member=u1,title='Member')
+    created= u1.members.filter(membership__title='Moderator')   
+    joined= u1.members.filter(membership__title='Member')   
     other=  models.Group.objects.exclude(user=u1) 
     return render(request, 'main/group_list.html', locals())
 
@@ -148,7 +150,7 @@ def create_group(request):
     u1= models.User.objects.get(id=request.session.get('user_id',None))
     if request.method=='GET':
         group_name= request.GET.get('group_name',None)
-        new_group= models.Group(name=group_name)
+        new_group= models.Group(name=group_name, moderator= u1.name)
         new_group.save()
 
         m1= models.Membership(member=u1,group=new_group)
@@ -238,7 +240,7 @@ def register(request):
             return redirect('/login/')
     else:
         return render(request, 'login/register.html',locals())
-    return render(request, 'login/register.html',locals())
+
 
 def logout(request):
     if not request.session.get('is_login',None):

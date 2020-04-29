@@ -10,15 +10,16 @@ class Movie(models.Model):
     year= models.CharField(max_length=4,null=True, blank=True)
     rating= models.CharField(max_length=4,null=True, blank=True)
     duration= models.CharField(max_length=4,null=True, blank=True)
-    trailer= models.CharField(max_length=128,null=True, blank=True)
-    review= models.CharField(max_length=128,null=True, blank=True)
+    trailer= models.URLField(null=True, blank=True)
+    review= models.URLField(null=True, blank=True)
     cover= models.URLField(null=True, blank=True)
-
+    
     def __str__(self):
         return self.name 
 
 class Group(models.Model):
     name= models.CharField(max_length=64, unique=True)
+    moderator= models.CharField(max_length=64)
     c_time= models.DateTimeField(auto_now_add= True)
     movies= models.ManyToManyField(Movie)
 
@@ -77,7 +78,7 @@ class Votes(models.Model):
     count = models.IntegerField(default=0)
 
     class Meta:
-        ordering= ["count"]
+        ordering= ["-count"]
 
 class HasVoted(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
